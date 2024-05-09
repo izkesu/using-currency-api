@@ -1,0 +1,89 @@
+﻿@model task1.Models.CurrencyRate
+
+@{
+    ViewBag.Title = "Currency Exchange Rates Live";
+}
+<style>
+   .body {
+        background-color:antiquewhite;
+    }
+
+    table tr:hover
+    {
+        background-color:deepskyblue;
+        cursor:pointer;
+        
+    }
+</style>
+
+
+<h2 style="color: darkcyan; font-weight: bold;">Currency Exchange Rates</h2>
+
+@if (Model != null)
+{
+    <p style="color:slategrey; font-weight: bold; font-size: 26px;">Base Currency: INR @Model.BaseCurrency</p>
+}
+else
+{
+    <p>Error fetching currency rates.</p>
+}
+
+
+    <div>
+        <label for="currency" style="font-weight: bold; font-size: 26px;">Select Currency Code:</label>
+        <select name="currency" id="currency" style="font-weight: bold; font-size: 18px; color: #007BFF;">
+            @foreach (var rate in Model.Rates)
+            {
+                if (rate.Key != "INR") // Assuming INR is the base currency
+                {
+                    <option value="@rate.Key">@rate.Key</option>
+                }
+            }
+        </select>
+    </div>
+    <div style="margin:10px">
+        
+        <input type="text" class="form-control" id="exchangeRateResult" readonly />
+    </div>
+
+    <div style="background-color:#c7e7f1;border:2px solid; ">
+
+
+        <table id="Currtable" class="table Currtable">
+            <thead>
+                <tr>
+                    <th style="font-weight: bold; font-size: 16px;">Currency</th>
+                    <th style="font-weight: bold; font-size: 16px;">Rate</th>
+                </tr>
+            </thead>
+            <tbody class="Currtable">
+
+                @foreach (var rate in Model.Rates)
+                {
+                    <tr>
+                        @**@<td>@rate.Key</td>
+                        <td id="@rate.Key" onclick="fn_curr('@rate.Key');">@rate.Value</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+   
+
+
+    function fn_curr(evnt) {
+      
+        var rate = $("#" + evnt).html();
+        $("#exchangeRateResult").val(rate);
+        $("#currency").val(evnt).trigger('change');
+    }
+
+</script>
+
