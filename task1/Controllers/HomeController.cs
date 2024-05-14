@@ -17,8 +17,11 @@ namespace task1.Controllers
         public async Task<ActionResult> Display()
         {
             var currencyRate = await GetCurrencyRate("INR");
+            //var historicalRates = await GetHistoricalCurrencyRate("INR");
+            //ViewBag.HistoricalRates = historicalRates;
             return View(currencyRate);
         }
+
 
         private async Task<CurrencyRate> GetCurrencyRate(string baseCurrency)
         {
@@ -230,9 +233,28 @@ namespace task1.Controllers
 
 
 
+        //private async Task<List<CurrencyRate>> GetHistoricalCurrencyRate(string baseCurrency)
+        //{
+        //    var startDate = DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd");
+        //    var endDate = DateTime.Now.ToString("yyyy-MM-dd");
+        //    using (var client = new HttpClient())
+        //    {
+        //        var response = await client.GetAsync($"https://api.currencyfreaks.com/v2.0/timeseries?apikey=3f90323e85da4b26b13dd40959d65993&startDate=2024-05-07&endDate=2024-05-14&base=INR&symbols=USD,GBP,EUR");
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            var content = await response.Content.ReadAsStringAsync();
+        //            var data = JsonConvert.DeserializeObject<CurrencyRate>(content);
+        //            return data.Rates;
+        //        }
+        //        else
+        //        {
+        //            return null;
+        //        }
+        //    }
+        //}
 
 
-       
+
 
     }
 }

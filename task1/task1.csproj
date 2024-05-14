@@ -126,6 +126,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CurrencyRate.cs" />
+    <Compile Include="Models\Rates.cs" />
+    <Compile Include="Models\Root.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

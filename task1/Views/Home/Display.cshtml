@@ -2,20 +2,41 @@
 
 @{
     ViewBag.Title = "Currency Exchange Rates Live";
+    var groupedRates = Model.Rates
+      .Select((value, index) => new { index, value })
+      .GroupBy(x => x.index / 10)
+      .Select(group => group.Select(x => x.value).ToList())
+      .ToList();
 }
+
 <style>
-   .body {
-        background-color:antiquewhite;
+    .body {
+        background-color: antiquewhite;
     }
 
-    table tr:hover
-    {
-        background-color:deepskyblue;
-        cursor:pointer;
-        
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        display: inline-block; /* This makes tables display side by side */
+        margin-right: 20px; /* Space between tables */
+        /*vertical-align: top;*/ /* Aligns tables at the top */
+    }
+
+    td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+
+    tr:hover {
+        background-color: deepskyblue;
+        cursor: pointer;
+    }
+
+    .hide {
+        display: none;
     }
 </style>
-
 
 <h2 style="color: darkcyan; font-weight: bold;">Currency Exchange Rates</h2>
 
@@ -28,62 +49,77 @@ else
     <p>Error fetching currency rates.</p>
 }
 
-
-    <div>
-        <label for="currency" style="font-weight: bold; font-size: 26px;">Select Currency Code:</label>
-        <select name="currency" id="currency" style="font-weight: bold; font-size: 18px; color: #007BFF;">
-            @foreach (var rate in Model.Rates)
+<div>
+    <label for="currency" style="font-weight: bold; font-size: 26px;">Select Currency Code:</label>
+    <select name="currency" id="currency" style="font-weight: bold; font-size: 18px; color: #007BFF;">
+        @foreach (var rate in Model.Rates)
+        {
+            if (rate.Key != "INR") // Assuming INR is the base currency
             {
-                if (rate.Key != "INR") // Assuming INR is the base currency
-                {
-                    <option value="@rate.Key">@rate.Key</option>
-                }
+                <option value="@rate.Key">@rate.Key</option>
             }
-        </select>
-    </div>
-    <div style="margin:10px">
-        
-        <input type="text" class="form-control" id="exchangeRateResult" readonly />
-    </div>
+        }
+    </select>
+</div>
+<div style="margin:10px">
+    <input type="text" class="form-control" id="exchangeRateResult" readonly />
+</div>
 
-    <div style="background-color:#c7e7f1;border:2px solid; ">
-
-
+<div style="width:13%;display:flex; ">
+    @foreach (var group in groupedRates)
+    {
         <table id="Currtable" class="table Currtable">
             <thead>
                 <tr>
-                    <th style="font-weight: bold; font-size: 16px;">Currency</th>
-                    <th style="font-weight: bold; font-size: 16px;">Rate</th>
+                    <th style="font-weight: bold; font-size: 16px; background-color:#ee8484;">Currency Codes</th>
                 </tr>
             </thead>
             <tbody class="Currtable">
-
-                @foreach (var rate in Model.Rates)
+                @foreach (var rate in group)
                 {
                     <tr>
-                        @**@<td>@rate.Key</td>
-                        <td id="@rate.Key" onclick="fn_curr('@rate.Key');">@rate.Value</td>
+                        <td onclick="fn_curr('@rate.Key');">@rate.Key</td>
+                        <td class="hide" id="@rate.Key">@rate.Value</td>
                     </tr>
                 }
             </tbody>
         </table>
-    </div>
-
-
-
+    }
+</div>
+<br />
+<br />
+<br />
+<div>
+    <h2 style="color: darkcyan; font-weight: bold;">Historical Data Upto 7 days</h2>
+    <table>
+        <thead>
+            <p style="color:slategrey; font-weight: bold; font-size: 16px;font-style:oblique;">This feature is available on Professional plan and onwards!</p>
+                @*<th>Date</th>
+        <th>USD</th>
+        <th>GBP</th>
+        <th>EUR</th>*@
+            
+        </thead>
+        @*<tbody>
+            @foreach (var rate in ViewBag.HistoricalRates)
+            {
+                <tr>
+                    <td>@rate.Date</td>
+                    <td>@rate.USD</td>
+                    <td>@rate.GBP</td>
+                    <td>@rate.EUR</td>
+                </tr>
+            }
+        </tbody>*@
+    </table>
+</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script>
-   
-
-
     function fn_curr(evnt) {
-      
         var rate = $("#" + evnt).html();
         $("#exchangeRateResult").val(rate);
         $("#currency").val(evnt).trigger('change');
     }
-
 </script>
-
